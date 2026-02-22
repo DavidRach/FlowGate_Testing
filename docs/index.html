@@ -183,7 +183,7 @@ gtag('config', 'G-LZ35J3XE4D', { 'anonymize_ip': true});
 </header>
 
 
-<p>With the new ggplot2 version 4 switching to S7 internals, ggcyto broke. With ggcyto now fixed in devel, checked to see if flowGate is still working and encountered a couple issues.</p>
+<p>With the new <code>ggplot2</code> version 4 switching to S7 internals, <code>ggcyto</code> broke. With <code>ggcyto</code> now fixed in devel, checked to see if <code>flowGate</code> is still working and encountered a couple issues.</p>
 <section id="getting-started" class="level1">
 <h1>Getting Started</h1>
 <section id="package-versions" class="level2">
@@ -253,20 +253,20 @@ titled "The cytoframe and cytoset classes" in the package vignette:
 </section>
 <section id="upstream-changes-to-ggplot2-and-ggcyto" class="level2">
 <h2 class="anchored" data-anchor-id="upstream-changes-to-ggplot2-and-ggcyto">Upstream Changes to ggplot2 and ggcyto</h2>
-<p><code>ggplot2</code> in it’s rollout to version 4 switched to using S7 internals. This caused some breaking changes to ggcyto, that were initially addressed <a href="https://github.com/RGLab/ggcyto/pull/103">here</a>.</p>
-<p>These changes however left the <code>as.ggplot()</code> function broken. These were subsequently patched <a href="https://github.com/RGLab/ggcyto/issues/109">here</a> and finally <a href="https://github.com/RGLab/ggcyto/pull/110">here</a> in ggcyto.</p>
+<p><code>ggplot2</code> in it’s rollout to version 4 switched to using S7 internals. This caused some breaking changes to <code>ggcyto</code>, that were initially addressed <a href="https://github.com/RGLab/ggcyto/pull/103">here</a>.</p>
+<p>These changes however left the <code>as.ggplot()</code> function broken. These were subsequently patched <a href="https://github.com/RGLab/ggcyto/issues/109">here</a> and finally <a href="https://github.com/RGLab/ggcyto/pull/110">here</a> in <code>ggcyto</code>.</p>
 </section>
 <section id="flowgate-hotspots" class="level2">
 <h2 class="anchored" data-anchor-id="flowgate-hotspots">flowGate hotspots</h2>
-<p>In my flowGate fork, the main areas driving the shinyApp to error out appear to be:</p>
+<p>In my <code>flowGate</code> <a href="https://github.com/DavidRach/flowGate">fork</a>, the main areas driving the shinyApp to error out appear to be:</p>
 <p><img src="images/preparePlots.png" class="img-fluid"></p>
-<p>With the changes to <code>ggcyto</code>, there appears to be a residual “ggcyto_GatingSet” class present that when passed to <code>as.ggplot()</code> is causing dispatch issues and causing the error out. Similar to what was done in the <a href="https://github.com/RGLab/ggcyto/commit/4e7589c838c3fb8e3f56e467566bef1c1efb1b3e">initial</a> attempted ggcyto fix, I removed this class designation. Once this is done, <code>as.ggplot()</code> works again, and the ShinyApp launches successfully.</p>
-<p>After gates were drawn, and done clicked, additional errors were outputed with colnames not found. This appears to be due to a ggplot2 internal change. When I updated to the form below, the X and Y axis names were retrieved, and new gates were correctly saved to the GatingSet object, and could be visualized as well.</p>
+<p>With the changes to <code>ggcyto</code>, there appears to be a residual “ggcyto_GatingSet” class present that when passed to <code>as.ggplot()</code> is causing dispatch issues and causing the error out. Similar to what was done in the <a href="https://github.com/RGLab/ggcyto/commit/4e7589c838c3fb8e3f56e467566bef1c1efb1b3e">initial</a> attempted <code>ggcyto</code> fix, I <a href="https://github.com/DavidRach/flowGate/blob/master/R/preparePlot.R">updated the code</a> removed this class designation. Once this is done, <code>as.ggplot()</code> works again, and the ShinyApp launches successfully.</p>
+<p>After gates were drawn, and done clicked, additional errors were outputed with colnames not found. This appears to be due to a <code>ggplot2</code> internal change. When I <a href="https://github.com/DavidRach/flowGate/blob/master/R/applyGateClose.R">updated the code</a> as shown below, the X and Y axis names were retrieved, and new gates were correctly saved to the GatingSet object, and could be visualized as well.</p>
 <p><img src="images/applyGateClose.png" class="img-fluid"></p>
 </section>
 <section id="unit-tests" class="level2">
 <h2 class="anchored" data-anchor-id="unit-tests">Unit Tests</h2>
-<p>Wrote some additional unit test using <code>testthat</code> and <code>vdiffr</code> for the functions involved. These can be found <a href="https://github.com/DavidRach/flowGate/tree/master/tests/testthat">here</a></p>
+<p>Wrote some additional unit test using <code>testthat</code> and <code>vdiffr</code> for the functions affected. These can be found <a href="https://github.com/DavidRach/flowGate/tree/master/tests/testthat">here</a></p>
 
 
 </section>

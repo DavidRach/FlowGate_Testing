@@ -46,13 +46,13 @@
     "href": "index.html#flowgate-hotspots",
     "title": "flowGate vs. new ggplot2/ggcyto",
     "section": "flowGate hotspots",
-    "text": "flowGate hotspots\nIn my flowGate fork, the main areas driving the shinyApp to error out appear to be:\n\nWith the changes to ggcyto, there appears to be a residual “ggcyto_GatingSet” class present that when passed to as.ggplot() is causing dispatch issues and causing the error out. Similar to what was done in the initial attempted ggcyto fix, I removed this class designation. Once this is done, as.ggplot() works again, and the ShinyApp launches successfully.\nAfter gates were drawn, and done clicked, additional errors were outputed with colnames not found. This appears to be due to a ggplot2 internal change. When I updated to the form below, the X and Y axis names were retrieved, and new gates were correctly saved to the GatingSet object, and could be visualized as well."
+    "text": "flowGate hotspots\nIn my flowGate fork, the main areas driving the shinyApp to error out appear to be:\n\nWith the changes to ggcyto, there appears to be a residual “ggcyto_GatingSet” class present that when passed to as.ggplot() is causing dispatch issues and causing the error out. Similar to what was done in the initial attempted ggcyto fix, I updated the code removed this class designation. Once this is done, as.ggplot() works again, and the ShinyApp launches successfully.\nAfter gates were drawn, and done clicked, additional errors were outputed with colnames not found. This appears to be due to a ggplot2 internal change. When I updated the code as shown below, the X and Y axis names were retrieved, and new gates were correctly saved to the GatingSet object, and could be visualized as well."
   },
   {
     "objectID": "index.html#unit-tests",
     "href": "index.html#unit-tests",
     "title": "flowGate vs. new ggplot2/ggcyto",
     "section": "Unit Tests",
-    "text": "Unit Tests\nWrote some additional unit test using testthat and vdiffr for the functions involved. These can be found here"
+    "text": "Unit Tests\nWrote some additional unit test using testthat and vdiffr for the functions affected. These can be found here"
   }
 ]
