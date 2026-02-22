@@ -1,0 +1,58 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "flowGate vs. new ggplot2/ggcyto",
+    "section": "",
+    "text": "With the new ggplot2 version 4 switching to S7 internals, ggcyto broke. With ggcyto now fixed in devel, checked to see if flowGate is still working and encountered a couple issues."
+  },
+  {
+    "objectID": "index.html#package-versions",
+    "href": "index.html#package-versions",
+    "title": "flowGate vs. new ggplot2/ggcyto",
+    "section": "Package Versions",
+    "text": "Package Versions\n\npackageVersion(\"ggplot2\")\n\n[1] '4.0.2'\n\npackageVersion(\"ggcyto\")\n\n[1] '1.39.1'\n\npackageVersion(\"flowGate\")\n\n[1] '1.10.0'"
+  },
+  {
+    "objectID": "index.html#load-via-library",
+    "href": "index.html#load-via-library",
+    "title": "flowGate vs. new ggplot2/ggcyto",
+    "section": "Load via library()",
+    "text": "Load via library()\n\nlibrary(ggplot2)\nlibrary(ggcyto)\n\nLoading required package: flowCore\n\n\nLoading required package: ncdfFlow\n\n\nLoading required package: BH\n\n\nLoading required package: flowWorkspace\n\n\nAs part of improvements to flowWorkspace, some behavior of\nGatingSet objects has changed. For details, please read the section\ntitled \"The cytoframe and cytoset classes\" in the package vignette:\n\n  vignette(\"flowWorkspace-Introduction\", \"flowWorkspace\")\n\nlibrary(flowGate)"
+  },
+  {
+    "objectID": "index.html#load-to-gating-set",
+    "href": "index.html#load-to-gating-set",
+    "title": "flowGate vs. new ggplot2/ggcyto",
+    "section": "Load to Gating Set",
+    "text": "Load to Gating Set\n\n# Loading internal .fcs files\npath_to_fcs &lt;- system.file(\"extdata\", package = \"flowGate\")\nfs &lt;- read.flowSet(path = path_to_fcs,\n   pattern = \".FCS$\", full.names = TRUE)\ngs &lt;- GatingSet(fs)"
+  },
+  {
+    "objectID": "index.html#launch-attempt",
+    "href": "index.html#launch-attempt",
+    "title": "flowGate vs. new ggplot2/ggcyto",
+    "section": "Launch Attempt",
+    "text": "Launch Attempt\n\nflowGate::gs_gate_interactive(gs, \"TestGate1\", dims=list(\"FSC-H\", \"SSC-H\"))\n\nUpon attempted launch, results in the following error within the ShinyApp:\n\n\nAnd the following output to the console:"
+  },
+  {
+    "objectID": "index.html#upstream-changes-to-ggplot2-and-ggcyto",
+    "href": "index.html#upstream-changes-to-ggplot2-and-ggcyto",
+    "title": "flowGate vs. new ggplot2/ggcyto",
+    "section": "Upstream Changes to ggplot2 and ggcyto",
+    "text": "Upstream Changes to ggplot2 and ggcyto\nggplot2 in it’s rollout to version 4 switched to using S7 internals. This caused some breaking changes to ggcyto, that were initially addressed here.\nThese changes however left the as.ggplot() function broken. These were subsequently patched here and finally here in ggcyto."
+  },
+  {
+    "objectID": "index.html#flowgate-hotspots",
+    "href": "index.html#flowgate-hotspots",
+    "title": "flowGate vs. new ggplot2/ggcyto",
+    "section": "flowGate hotspots",
+    "text": "flowGate hotspots\nIn my flowGate fork, the main areas driving the shinyApp to error out appear to be:\n\nWith the changes to ggcyto, there appears to be a residual “ggcyto_GatingSet” class present that when passed to as.ggplot() is causing dispatch issues and causing the error out. Similar to what was done in the initial attempted ggcyto fix, I removed this class designation. Once this is done, as.ggplot() works again, and the ShinyApp launches successfully.\nAfter gates were drawn, and done clicked, additional errors were outputed with colnames not found. This appears to be due to a ggplot2 internal change. When I updated to the form below, the X and Y axis names were retrieved, and new gates were correctly saved to the GatingSet object, and could be visualized as well."
+  },
+  {
+    "objectID": "index.html#unit-tests",
+    "href": "index.html#unit-tests",
+    "title": "flowGate vs. new ggplot2/ggcyto",
+    "section": "Unit Tests",
+    "text": "Unit Tests\nWrote some additional unit test using testthat and vdiffr for the functions involved. These can be found here"
+  }
+]

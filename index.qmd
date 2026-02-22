@@ -1,0 +1,74 @@
+---
+title: "flowGate vs. new ggplot2/ggcyto"
+format: html
+---
+
+With the new ggplot2 version 4 switching to S7 internals, ggcyto broke. With ggcyto now fixed in devel, checked to see if flowGate is still working and encountered a couple issues. 
+
+# Getting Started
+
+## Package Versions
+
+```{r}
+packageVersion("ggplot2")
+packageVersion("ggcyto")
+packageVersion("flowGate")
+```
+
+## Load via library()
+
+```{r}
+library(ggplot2)
+library(ggcyto)
+library(flowGate)
+```
+
+## Load to Gating Set
+
+```{r}
+# Loading internal .fcs files
+path_to_fcs <- system.file("extdata", package = "flowGate")
+fs <- read.flowSet(path = path_to_fcs,
+   pattern = ".FCS$", full.names = TRUE)
+gs <- GatingSet(fs)
+```
+
+## Launch Attempt
+
+```{r}
+#| eval: FALSE
+flowGate::gs_gate_interactive(gs, "TestGate1", dims=list("FSC-H", "SSC-H"))
+```
+
+Upon attempted launch, results in the following error within the ShinyApp:
+
+![](images/Error.png)
+
+<br>
+
+And the following output to the console:
+
+![](images/ConsoleOutputError.png)
+
+## Upstream Changes to ggplot2 and ggcyto
+
+`ggplot2` in it's rollout to version 4 switched to using S7 internals. This caused some breaking changes to ggcyto, that were initially addressed [here](https://github.com/RGLab/ggcyto/pull/103). 
+
+These changes however left the `as.ggplot()` function broken. These were subsequently patched [here](https://github.com/RGLab/ggcyto/issues/109) and finally [here](https://github.com/RGLab/ggcyto/pull/110) in ggcyto. 
+
+
+## flowGate hotspots
+
+In my flowGate fork, the main areas driving the shinyApp to error out appear to be:
+
+![](images/preparePlots.png)
+
+With the changes to `ggcyto`, there appears to be a residual "ggcyto_GatingSet" class present that when passed to `as.ggplot()` is causing dispatch issues and causing the error out. Similar to what was done in the [initial](https://github.com/RGLab/ggcyto/commit/4e7589c838c3fb8e3f56e467566bef1c1efb1b3e) attempted ggcyto fix, I removed this class designation. Once this is done, `as.ggplot()` works again, and the ShinyApp launches successfully. 
+
+After gates were drawn, and done clicked, additional errors were outputed with colnames not found. This appears to be due to a ggplot2 internal change. When I updated to the form below, the X and Y axis names were retrieved, and new gates were correctly saved to the GatingSet object, and could be visualized as well. 
+
+![](images/applyGateClose.png)
+
+## Unit Tests
+
+Wrote some additional unit test using `testthat` and `vdiffr` for the functions involved. These can be found [here](https://github.com/DavidRach/flowGate/tree/master/tests/testthat)
